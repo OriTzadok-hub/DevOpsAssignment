@@ -55,7 +55,7 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          terraform plan -var="mongodb_uri=${{ secrets.MONGODB_CONNECTION_STRING }}"
+          terraform plan -var="mongodb_uri=${{ secrets.MONGODB_CONNECTION_STRING }}" -var="ssl_certificate_arn=${{secrets.SSL_CERTIFICATE_ARN}}"
         working-directory: ${{ env.TF_WORKING_DIR }}
 
       
