@@ -1,0 +1,61 @@
+# Workflow Name: Deploy Terraform
+#
+# Description:
+# This workflow automates the deployment of infrastructure using Terraform.
+# It is triggered manually via the GitHub Actions workflow_dispatch event.
+#
+# Workflow Steps:
+# 1. Checkout the repository to access its content.
+# 2. Configure AWS credentials for the GitHub Actions agent.
+# 5. Plan infrastructure changes to review potential modifications.
+#
+# Usage:
+# To run this workflow, trigger it manually through the GitHub UI under the Actions tab of your repository.
+#
+# Prerequisites:
+# - AWS credentials stored as GitHub Secrets.
+
+name: Deploy Terraform
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1  # Change this to the appropriate AWS region
+  TF_WORKING_DIR: terraform  # Change if Terraform files are in a different directory
+
+jobs:
+  terraform:
+    name: Validate and Plan Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Validate Terraform Configuration
+        run: terraform validate
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      - name: Terraform Plan
+        run: |
+          terraform plan -var="mongodb_uri=${{ secrets.MONGODB_CONNECTION_STRING }}"
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+      
