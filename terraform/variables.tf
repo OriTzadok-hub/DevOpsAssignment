@@ -34,16 +34,19 @@ variable "environment" {
 variable "frontend_image" {
   description = "Docker image URL for frontend container"
   type        = string
+  default = "your-ecr-repo/frontend:latest"
 }
 
 variable "service_a_image" {
   description = "Docker image URL for Service A container"
   type        = string
+  default = "your-ecr-repo/service-a:latest"
 }
 
 variable "service_b_image" {
   description = "Docker image URL for Service B container"
   type        = string
+  default = "your-ecr-repo/service-b:latest"
 }
 
 # Desired Task Count
