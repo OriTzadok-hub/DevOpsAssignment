@@ -44,6 +44,7 @@ jobs:
           issue-body: "Please approve or deny the deployment to production."
           exclude-workflow-initiator-as-approver: false
           fail-on-denial: true
+          timeout-minutes: 15
 
       - name: Checkout repository
         uses: actions/checkout@v4
