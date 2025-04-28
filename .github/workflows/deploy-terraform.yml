@@ -35,15 +35,14 @@ jobs:
     steps:
 
       - name: Await Manual Approval
-        uses: trstringer/manual-approval@v1
+        uses: trstringer/manual-approval@v1.9.0
         with:
           secret: ${{ secrets.GITHUB_TOKEN }}
-          approvers: OriTzadok-Hub
+          approvers: OriTzadok-hub
           minimum-approvals: 1
           issue-title: "Production Deployment Approval Required"
           issue-body: "Please approve or deny the deployment to production."
           exclude-workflow-initiator-as-approver: false
-          fail-on-denial: true
           timeout-minutes: 15
 
       - name: Checkout repository
