@@ -30,6 +30,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Await Manual Approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: OriTzadok-Hub
+          minimum-approvals: 1
+          issue-title: "Production Deployment Approval Required"
+          issue-body: "Please approve or deny the deployment to production."
+          exclude-workflow-initiator-as-approver: false
+          fail-on-denial: true
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
