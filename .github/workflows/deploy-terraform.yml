@@ -24,6 +24,9 @@ env:
   AWS_REGION: us-east-1  # Change this to the appropriate AWS region
   TF_WORKING_DIR: terraform  # Change if Terraform files are in a different directory
 
+permissions:
+  issues: write
+
 jobs:
   terraform:
     name: Validate and Plan Terraform
