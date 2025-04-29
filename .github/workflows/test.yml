@@ -1,0 +1,57 @@
+name: Test GitHub Variable Extraction
+
+on:
+  workflow_dispatch:
+
+env:
+  APPROVAL_CONFIG: |
+    service1@prod=2|user1,user2,user3
+    service2@dev=1|user4,user5
+    service3@staging=1|user6
+
+jobs:
+  test-extraction:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract approval settings
+        id: extract
+        shell: bash
+        run: |
+          set -e
+
+          STACK_NAME="service1"
+          ENVIRONMENT="prod"
+
+          echo "🔎 Looking for approval config for stack=$STACK_NAME environment=$ENVIRONMENT..."
+
+          CONFIG=$(echo "$APPROVAL_CONFIG" | grep -E "^${STACK_NAME}@${ENVIRONMENT}=" || true)
+
+          if [[ -z "$CONFIG" ]]; then
+            echo "⚡ No approval needed."
+            echo "approval-needed=false" >> $GITHUB_ENV
+            exit 0
+          fi
+
+          # Split the config
+          IFS='=|' read -r _ REQUIRED_APPROVALS ALLOWED_USERS <<< "$CONFIG"
+
+          echo "✅ Found config:"
+          echo "Required Approvals: $REQUIRED_APPROVALS"
+          echo "Allowed Users: $ALLOWED_USERS"
+
+          # Export for following steps
+          echo "approval-needed=true" >> $GITHUB_ENV
+          echo "required-approvals=$REQUIRED_APPROVALS" >> $GITHUB_ENV
+          echo "allowed-users=$ALLOWED_USERS" >> $GITHUB_ENV
+
+      - name: Display extracted results
+        if: env.approval-needed == 'true'
+        run: |
+          echo "🚀 Approval is needed."
+          echo "Required approvals: ${{ env.required-approvals }}"
+          echo "Allowed users: ${{ env.allowed-users }}"
+
+      - name: Display no approval needed
+        if: env.approval-needed == 'false'
+        run: |
+          echo "✅ No approval is needed for this stack/environment."
