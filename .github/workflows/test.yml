@@ -19,7 +19,7 @@ jobs:
         run: |
           set -e
 
-          STACK_NAME="service1"
+          STACK_NAME="service5"
           ENVIRONMENT="prod"
 
           echo "🔎 Looking for approval config for stack=$STACK_NAME environment=$ENVIRONMENT..."
